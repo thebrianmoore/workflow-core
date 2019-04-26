@@ -17,6 +17,7 @@ namespace WorkflowCore.Models
         internal TimeSpan IdleTime;
         internal TimeSpan ErrorRetryInterval;
         internal int MaxConcurrentWorkflows = Math.Max(Environment.ProcessorCount, 2);
+        internal int MaxRetries;
 
         public IServiceCollection Services { get; private set; }
 
@@ -26,6 +27,7 @@ namespace WorkflowCore.Models
             PollInterval = TimeSpan.FromSeconds(10);
             IdleTime = TimeSpan.FromMilliseconds(100);
             ErrorRetryInterval = TimeSpan.FromSeconds(60);
+            MaxRetries = 0;
 
             QueueFactory = new Func<IServiceProvider, IQueueProvider>(sp => new SingleNodeQueueProvider());
             LockFactory = new Func<IServiceProvider, IDistributedLockProvider>(sp => new SingleNodeLockProvider());
@@ -72,6 +74,11 @@ namespace WorkflowCore.Models
         public void UseMaxConcurrentWorkflows(int maxConcurrentWorkflows)
         {
             MaxConcurrentWorkflows = maxConcurrentWorkflows;
+        }
+        
+        public void UseMaxRetries(int maxRetries)
+        {
+            MaxRetries = maxRetries;
         }
     }
         
